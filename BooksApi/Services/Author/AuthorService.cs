@@ -2,11 +2,12 @@
 using BooksApi.Data;
 using BooksApi.Dto.Author;
 using BooksApi.Models;
+using BooksApi.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace BooksApi.Services.Author
 {
-    public class AuthorService : IAuthorInterface
+    public class AuthorService : IAuthorRepository
     {
         private readonly AppDbContext _context;
         public AuthorService(AppDbContext context)
@@ -15,14 +16,14 @@ namespace BooksApi.Services.Author
         }
 
 
-        public async Task<ResponseModel<List<AuthorModel>>> FindAll()
+        public async Task<ResponseModel<List<AuthorDto>>> FindAll()
         {
-            ResponseModel<List<AuthorModel>> response = new ResponseModel<List<AuthorModel>>();
+            ResponseModel<List<AuthorDto>> response = new ResponseModel<List<AuthorDto>>();
             try
             {
                 List<AuthorModel> authors = await _context.Authors.ToListAsync();
 
-                response.Datas = authors;
+                response.Datas = authors.Select(author => new AuthorDto(author)).ToList();
                 response.Message = "Todos os Autores foram coletados!";
 
                 return response;
@@ -35,9 +36,9 @@ namespace BooksApi.Services.Author
             }
         }
 
-        public async Task<ResponseModel<AuthorModel>> FindById(int id)
+        public async Task<ResponseModel<AuthorDto>> FindById(int id)
         {
-            ResponseModel<AuthorModel> response = new ResponseModel<AuthorModel>();
+            ResponseModel<AuthorDto> response = new ResponseModel<AuthorDto>();
             try
             {
                 AuthorModel author = await _context.Authors
@@ -48,7 +49,7 @@ namespace BooksApi.Services.Author
                     response.Message = $"Autor do ID {id} não foi encontrado!";
                     return response;
                 }
-                response.Datas = author;
+                response.Datas = new AuthorDto(author);
                 response.Message = $"Autor do ID {id} foi encontrado!";
                 return response;
             }
@@ -60,12 +61,12 @@ namespace BooksApi.Services.Author
             }
         }
 
-        public async Task<ResponseModel<AuthorModel>> FindByIdBook(int bookId)
+        public async Task<ResponseModel<AuthorDto>> FindByIdBook(int bookId)
         {
-            ResponseModel<AuthorModel> response = new ResponseModel<AuthorModel>();
+            ResponseModel<AuthorDto> response = new ResponseModel<AuthorDto>();
             try
             {
-                var book = await _context.Books
+                BookModel book = await _context.Books
                     .Include(x => x.Author)
                     .FirstOrDefaultAsync(book => book.Id == bookId);
 
@@ -76,7 +77,7 @@ namespace BooksApi.Services.Author
                 }
                 AuthorModel author = book.Author;
 
-                response.Datas = author;
+                response.Datas = new AuthorDto(author);
                 response.Message = $"Autor do livro cujo ID é {bookId} foi localizado com sucesso!";
                 return response;
             }
@@ -88,16 +89,16 @@ namespace BooksApi.Services.Author
             }
         }
 
-        public async Task<ResponseModel<AuthorModel>> Insert(AuthorInsertDto entity)
+        public async Task<ResponseModel<AuthorDto>> Insert(AuthorDto entity)
         {
-            ResponseModel<AuthorModel> response = new ResponseModel<AuthorModel>();
+            ResponseModel<AuthorDto> response = new ResponseModel<AuthorDto>();
             try
             {
                 AuthorModel author = new(entity.Name, entity.Surname);
                 await _context.Authors.AddAsync(author);
                 await _context.SaveChangesAsync();
 
-                response.Datas = author;
+                response.Datas = new AuthorDto(author);
 
                 return response;
             }
@@ -109,9 +110,9 @@ namespace BooksApi.Services.Author
             }
         }
 
-        public async Task<ResponseModel<AuthorModel>> Update(AuthorInsertDto entity, int id)
+        public async Task<ResponseModel<AuthorDto>> Update(AuthorDto entity, int id)
         {
-            ResponseModel<AuthorModel> response = new ResponseModel<AuthorModel>();
+            ResponseModel<AuthorDto> response = new ResponseModel<AuthorDto>();
             try
             {
                 AuthorModel author = await _context.Authors.
@@ -123,12 +124,13 @@ namespace BooksApi.Services.Author
                     return response;
                 }
 
-                author = new(entity.Name, entity.Surname);
+                author.Name = entity.Name;
+                author.Surname = entity.Surname;
 
                 _context.Update(author);
                 await _context.SaveChangesAsync();
 
-                response.Datas = author;
+                response.Datas = new AuthorDto(author);
                 response.Message = $"Autor do ID {id} atualizado com sucesso!";
                 return response;
             }
@@ -140,10 +142,9 @@ namespace BooksApi.Services.Author
             }
         }
 
-
-        public async Task<ResponseModel<AuthorModel>> DeleteById(int id)
+        public async Task<ResponseModel<AuthorDto>> DeleteById(int id)
         {
-            ResponseModel<AuthorModel> response = new ResponseModel<AuthorModel>();
+            ResponseModel<AuthorDto> response = new ResponseModel<AuthorDto>();
             try
             {
                 AuthorModel author = await _context.Authors.
@@ -168,5 +169,6 @@ namespace BooksApi.Services.Author
                 return response;
             }
         }
+
     }
 }

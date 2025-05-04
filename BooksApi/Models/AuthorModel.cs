@@ -7,7 +7,6 @@ namespace BooksApi.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
-        [JsonIgnore]
         public ICollection<BookModel> Books { get; set; }
 
         public AuthorModel(string name, string surname)

@@ -1,7 +1,6 @@
 ﻿using BooksApi.Dto.Author;
 using BooksApi.Models;
-using BooksApi.Services.Author;
-using Microsoft.AspNetCore.Http;
+using BooksApi.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BooksApi.Controllers
@@ -10,51 +9,51 @@ namespace BooksApi.Controllers
     [ApiController]
     public class AuthorController : ControllerBase
     {
-        private readonly IAuthorInterface _authorInterface;
-        public AuthorController(IAuthorInterface authorInterface)
+        private readonly IAuthorRepository _authorInterface;
+        public AuthorController(IAuthorRepository authorInterface)
         {
             _authorInterface = authorInterface;
         }
 
         [HttpGet]
-        public async Task<ActionResult<ResponseModel<List<AuthorModel>>>> FindAll()
+        public async Task<ActionResult<ResponseModel<List<AuthorDto>>>> FindAll()
         {
-            ResponseModel<List<AuthorModel>> response = await _authorInterface.FindAll();
+            ResponseModel<List<AuthorDto>> response = await _authorInterface.FindAll();
             return Ok(response);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ResponseModel<AuthorModel>>> FindById(int id)
+        public async Task<ActionResult<ResponseModel<AuthorDto>>> FindById(int id)
         {
-            ResponseModel<AuthorModel> response = await _authorInterface.FindById(id);
+            ResponseModel<AuthorDto> response = await _authorInterface.FindById(id);
             return Ok(response);
         }
 
         [HttpGet("Book/{bookId}")]
-        public async Task<ActionResult<ResponseModel<AuthorModel>>> FindByIdBook(int bookId)
+        public async Task<ActionResult<ResponseModel<AuthorDto>>> FindByIdBook(int bookId)
         {
-            ResponseModel<AuthorModel> response = await _authorInterface.FindByIdBook(bookId);
+            ResponseModel<AuthorDto> response = await _authorInterface.FindByIdBook(bookId);
             return Ok(response);
         }
 
         [HttpPost]
-        public async Task<ActionResult<ResponseModel<AuthorModel>>> Insert(AuthorInsertDto dto)
+        public async Task<ActionResult<ResponseModel<AuthorDto>>> Insert(AuthorDto dto)
         {
-            ResponseModel<AuthorModel> response = await _authorInterface.Insert(dto);
+            ResponseModel<AuthorDto> response = await _authorInterface.Insert(dto);
             return Ok(response);
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<ResponseModel<AuthorModel>>> Update(AuthorInsertDto entity, int id)
+        public async Task<ActionResult<ResponseModel<AuthorDto>>> Update(AuthorDto entity, int id)
         {
-            ResponseModel<AuthorModel> response = await _authorInterface.Update(entity, id);
+            ResponseModel<AuthorDto> response = await _authorInterface.Update(entity, id);
             return Ok(response);
         }
 
-        [HttpDelete]
-        public async Task<ActionResult<ResponseModel<AuthorModel>>> Delete(int id)
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<ResponseModel<AuthorDto>>> Delete(int id)
         {
-            ResponseModel<AuthorModel> response = await _authorInterface.DeleteById(id);
+            ResponseModel<AuthorDto> response = await _authorInterface.DeleteById(id);
             return Ok(response);
         }
     }

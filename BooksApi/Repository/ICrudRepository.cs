@@ -2,12 +2,12 @@
 
 namespace BooksApi.Repository
 {
-    public interface ICrudRepository<T, K>
+    public interface ICrudRepository<T>
     {
         Task<ResponseModel<List<T>>> FindAll();
         Task<ResponseModel<T>> FindById(int id);
-        Task<ResponseModel<T>> Insert(K entity);
-        Task<ResponseModel<T>> Update(K entity, int id);
+        Task<ResponseModel<T>> Insert(T entity);
+        Task<ResponseModel<T>> Update(T entity, int id);
         Task<ResponseModel<T>> DeleteById(int id);
     }
 }

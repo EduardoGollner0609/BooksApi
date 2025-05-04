@@ -1,5 +1,6 @@
 
 using BooksApi.Data;
+using BooksApi.Repository;
 using BooksApi.Services.Author;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,7 +24,7 @@ namespace BooksApi
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            builder.Services.AddScoped<IAuthorInterface, AuthorService>();
+            builder.Services.AddScoped<IAuthorRepository, AuthorService>();
 
             var app = builder.Build();
 
