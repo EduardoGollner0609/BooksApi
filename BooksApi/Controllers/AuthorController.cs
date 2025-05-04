@@ -40,8 +40,22 @@ namespace BooksApi.Controllers
         [HttpPost]
         public async Task<ActionResult<ResponseModel<AuthorModel>>> Insert(AuthorInsertDto dto)
         {
-            ResponseModel<AuthorModel> author = await _authorInterface.Insert(dto);
-            return Ok(author);
+            ResponseModel<AuthorModel> response = await _authorInterface.Insert(dto);
+            return Ok(response);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<ResponseModel<AuthorModel>>> Update(AuthorInsertDto entity, int id)
+        {
+            ResponseModel<AuthorModel> response = await _authorInterface.Update(entity, id);
+            return Ok(response);
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult<ResponseModel<AuthorModel>>> Delete(int id)
+        {
+            ResponseModel<AuthorModel> response = await _authorInterface.DeleteById(id);
+            return Ok(response);
         }
     }
 }

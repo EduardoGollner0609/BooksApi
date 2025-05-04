@@ -1,4 +1,5 @@
-﻿using BooksApi.Data;
+﻿using Azure;
+using BooksApi.Data;
 using BooksApi.Dto.Author;
 using BooksApi.Models;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,8 @@ namespace BooksApi.Services.Author
         {
             _context = context;
         }
+
+
         public async Task<ResponseModel<List<AuthorModel>>> FindAll()
         {
             ResponseModel<List<AuthorModel>> response = new ResponseModel<List<AuthorModel>>();
@@ -96,6 +99,66 @@ namespace BooksApi.Services.Author
 
                 response.Datas = author;
 
+                return response;
+            }
+            catch (Exception e)
+            {
+                response.Message = e.Message;
+                response.Status = false;
+                return response;
+            }
+        }
+
+        public async Task<ResponseModel<AuthorModel>> Update(AuthorInsertDto entity, int id)
+        {
+            ResponseModel<AuthorModel> response = new ResponseModel<AuthorModel>();
+            try
+            {
+                AuthorModel author = await _context.Authors.
+                    FirstOrDefaultAsync(author => author.Id == id);
+
+                if (author == null)
+                {
+                    response.Message = $"Autor do ID {id} não foi encontrado!";
+                    return response;
+                }
+
+                author = new(entity.Name, entity.Surname);
+
+                _context.Update(author);
+                await _context.SaveChangesAsync();
+
+                response.Datas = author;
+                response.Message = $"Autor do ID {id} atualizado com sucesso!";
+                return response;
+            }
+            catch (Exception e)
+            {
+                response.Message = e.Message;
+                response.Status = false;
+                return response;
+            }
+        }
+
+
+        public async Task<ResponseModel<AuthorModel>> DeleteById(int id)
+        {
+            ResponseModel<AuthorModel> response = new ResponseModel<AuthorModel>();
+            try
+            {
+                AuthorModel author = await _context.Authors.
+                    FirstOrDefaultAsync(author => author.Id == id);
+
+                if (author == null)
+                {
+                    response.Message = $"Autor do ID {id} não foi encontrado!";
+                    return response;
+                }
+
+                _context.Remove(author);
+                await _context.SaveChangesAsync();
+
+                response.Message = "Deletado com sucesso!";
                 return response;
             }
             catch (Exception e)
