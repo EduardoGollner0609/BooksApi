@@ -18,9 +18,22 @@ namespace BooksApi.Controllers
         [HttpGet]
         public async Task<ActionResult<ResponseModel<List<AuthorModel>>>> FindAll()
         {
-            ResponseModel<List<AuthorModel>> authors = await _authorInterface.FindAll();
-            return Ok(authors);
+            ResponseModel<List<AuthorModel>> response = await _authorInterface.FindAll();
+            return Ok(response);
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<AuthorModel>> FindById(int id)
+        {
+            ResponseModel<AuthorModel> response = await _authorInterface.FindById(id);
+            return Ok(response);
+        }
+
+        [HttpGet("Book/{bookId}")]
+        public async Task<ActionResult<AuthorModel>> FindByIdBook(int bookId)
+        {
+            ResponseModel<AuthorModel> response = await _authorInterface.FindByIdBook(bookId);
+            return Ok(response);
+        }
     }
 }

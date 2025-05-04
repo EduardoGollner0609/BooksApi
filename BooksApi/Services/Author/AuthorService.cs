@@ -1,6 +1,7 @@
 ﻿using BooksApi.Data;
 using BooksApi.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.ObjectPool;
 
 namespace BooksApi.Services.Author
 {
@@ -33,12 +34,55 @@ namespace BooksApi.Services.Author
 
         public async Task<ResponseModel<AuthorModel>> FindById(int id)
         {
-         
+            ResponseModel<AuthorModel> response = new ResponseModel<AuthorModel>();
+            try
+            {
+                AuthorModel author = await _context.Authors
+                    .FirstOrDefaultAsync(author => author.Id == id);
+
+                if (author == null)
+                {
+                    response.Message = $"Autor do ID {id} não foi encontrado!";
+                    return response;
+                }
+                response.Datas = author;
+                response.Message = $"Autor do ID {id} foi encontrado!";
+                return response;
+            }
+            catch (Exception e)
+            {
+                response.Message = e.Message;
+                response.Status = false;
+                return response;
+            }
         }
 
-        public Task<ResponseModel<AuthorModel>> FindByIdBook(int bookId)
+        public async Task<ResponseModel<AuthorModel>> FindByIdBook(int bookId)
         {
-            throw new NotImplementedException();
+            ResponseModel<AuthorModel> response = new ResponseModel<AuthorModel>();
+            try
+            {
+                var book = await _context.Books
+                    .Include(x => x.Author)
+                    .FirstOrDefaultAsync(book => book.Id == bookId);
+
+                if (book == null)
+                {
+                    response.Message = $"Livro do ID {bookId} não foi encontrado!";
+                    return response;
+                }
+                AuthorModel author = book.Author;
+
+                response.Datas = author;
+                response.Message = $"Autor do livro cujo ID é {bookId} foi localizado com sucesso!";
+                return response;
+            }
+            catch (Exception e)
+            {
+                response.Message = e.Message;
+                response.Status = false;
+                return response;
+            }
         }
     }
 }
