@@ -14,8 +14,6 @@ namespace BooksApi.Services.Author
         {
             _context = context;
         }
-
-
         public async Task<ResponseModel<List<AuthorDto>>> FindAll()
         {
             ResponseModel<List<AuthorDto>> response = new ResponseModel<List<AuthorDto>>();

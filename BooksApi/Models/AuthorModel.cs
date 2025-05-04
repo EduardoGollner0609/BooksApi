@@ -8,6 +8,11 @@ namespace BooksApi.Models
         public string Name { get; set; }
         public string Surname { get; set; }
         public ICollection<BookModel> Books { get; set; }
+        public AuthorModel() { }
+        public AuthorModel(int Id)
+        {
+            Id = Id;
+        }
 
         public AuthorModel(string name, string surname)
         {

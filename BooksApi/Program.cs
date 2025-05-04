@@ -2,6 +2,7 @@
 using BooksApi.Data;
 using BooksApi.Repository;
 using BooksApi.Services.Author;
+using BooksApi.Services.Book;
 using Microsoft.EntityFrameworkCore;
 
 namespace BooksApi
@@ -25,6 +26,7 @@ namespace BooksApi
             });
 
             builder.Services.AddScoped<IAuthorRepository, AuthorService>();
+            builder.Services.AddScoped<IBookRepository, BookService>();
 
             var app = builder.Build();
 
