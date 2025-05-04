@@ -1,7 +1,7 @@
 ﻿using BooksApi.Data;
+using BooksApi.Dto.Author;
 using BooksApi.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.ObjectPool;
 
 namespace BooksApi.Services.Author
 {
@@ -75,6 +75,27 @@ namespace BooksApi.Services.Author
 
                 response.Datas = author;
                 response.Message = $"Autor do livro cujo ID é {bookId} foi localizado com sucesso!";
+                return response;
+            }
+            catch (Exception e)
+            {
+                response.Message = e.Message;
+                response.Status = false;
+                return response;
+            }
+        }
+
+        public async Task<ResponseModel<AuthorModel>> Insert(AuthorInsertDto entity)
+        {
+            ResponseModel<AuthorModel> response = new ResponseModel<AuthorModel>();
+            try
+            {
+                AuthorModel author = new(entity.Name, entity.Surname);
+                await _context.Authors.AddAsync(author);
+                await _context.SaveChangesAsync();
+
+                response.Datas = author;
+
                 return response;
             }
             catch (Exception e)

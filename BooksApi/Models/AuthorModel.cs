@@ -9,5 +9,11 @@ namespace BooksApi.Models
         public string Surname { get; set; }
         [JsonIgnore]
         public ICollection<BookModel> Books { get; set; }
+
+        public AuthorModel(string name, string surname)
+        {
+            Name = name;
+            Surname = surname;
+        }
     }
 }
