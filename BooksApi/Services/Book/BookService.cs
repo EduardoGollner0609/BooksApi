@@ -90,8 +90,18 @@ namespace BooksApi.Services.Book
             ResponseModel<BookDto> response = new ResponseModel<BookDto>();
             try
             {
-                BookModel book = new(entity.Title, new(entity.Id));
-                await _context.AddAsync(book);
+                AuthorModel author = await _context.Authors.
+                    FirstOrDefaultAsync(author => author.Id == entity.Author.Id);
+
+                if (author == null)
+                {
+                    response.Message = $"Autor do ID {entity.Author.Id} não foi localizado!";
+                    return response;
+                }
+
+                BookModel book = new(entity.Title, author);
+
+                _context.Add(book);
                 await _context.SaveChangesAsync();
 
                 response.Datas = new BookDto(book);
@@ -111,16 +121,26 @@ namespace BooksApi.Services.Book
             ResponseModel<BookDto> response = new ResponseModel<BookDto>();
             try
             {
-                BookModel book = await _context.Books.FirstOrDefaultAsync(book => book.Id == id);
+                BookModel book = await _context.Books
+                    .Include(book => book.Author)
+                    .FirstOrDefaultAsync(book => book.Id == id);
+
+                AuthorModel author = await _context.Authors.
+                   FirstOrDefaultAsync(author => author.Id == entity.Author.Id);
 
                 if (book == null)
                 {
                     response.Message = $"Livro do ID {id} não foi encontrado!";
                     return response;
                 }
+                if (author == null)
+                {
+                    response.Message = $"Autor do ID {id} não foi encontrado!";
+                    return response;
+                }
 
                 book.Title = entity.Title;
-                book.Author.Id = entity.Id;
+                book.Author = author;
 
                 _context.Update(book);
                 await _context.SaveChangesAsync();
@@ -143,7 +163,7 @@ namespace BooksApi.Services.Book
             try
             {
                 BookModel book = await _context.Books.FirstOrDefaultAsync(book => book.Id == id);
-                
+
                 if (book == null)
                 {
                     response.Message = $"Livro do ID {id} não foi encontrado!";
@@ -153,7 +173,7 @@ namespace BooksApi.Services.Book
                 _context.Remove(book);
                 await _context.SaveChangesAsync();
 
-                response.Message = $"Livro do ID {id} não foi deletado com sucesso!";
+                response.Message = $"Livro do ID {id} foi deletado com sucesso!";
 
                 return response;
 

@@ -9,6 +9,10 @@ namespace BooksApi.Dto.Author
         public string Surname { get; set; }
 
         public AuthorDto() { }
+        public AuthorDto(int id)
+        {
+            Id = id;
+        }
 
         public AuthorDto(AuthorModel author)
         {
