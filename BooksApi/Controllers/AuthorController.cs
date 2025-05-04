@@ -26,6 +26,10 @@ namespace BooksApi.Controllers
         public async Task<ActionResult<ResponseModel<AuthorDto>>> FindById(int id)
         {
             ResponseModel<AuthorDto> response = await _authorRepository.FindById(id);
+            if (response.Datas == null)
+            {
+                return NotFound(response);
+            }
             return Ok(response);
         }
 
@@ -33,6 +37,10 @@ namespace BooksApi.Controllers
         public async Task<ActionResult<ResponseModel<AuthorDto>>> FindByIdBook(int bookId)
         {
             ResponseModel<AuthorDto> response = await _authorRepository.FindByIdBook(bookId);
+            if (response.Datas == null)
+            {
+                return NotFound(response);
+            }
             return Ok(response);
         }
 
@@ -40,21 +48,33 @@ namespace BooksApi.Controllers
         public async Task<ActionResult<ResponseModel<AuthorDto>>> Insert(AuthorDto dto)
         {
             ResponseModel<AuthorDto> response = await _authorRepository.Insert(dto);
-            return Ok(response);
+
+            var uri = $"{Request.Scheme}://{Request.Host}{Request.Path}/{response.Datas.Id}";
+
+            return Created(uri, response);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<ResponseModel<AuthorDto>>> Update(AuthorDto entity, int id)
         {
             ResponseModel<AuthorDto> response = await _authorRepository.Update(entity, id);
+            if (response.Datas == null)
+            {
+                return NotFound(response);
+            }
             return Ok(response);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<ResponseModel<AuthorDto>>> Delete(int id)
         {
+            string messageNotFound = $"Autor do ID {id} não foi encontrado!";
             ResponseModel<AuthorDto> response = await _authorRepository.DeleteById(id);
-            return Ok(response);
+            if (response.Message.Equals(messageNotFound))
+            {
+                return NotFound(response);
+            }
+            return NoContent();
         }
     }
 }
