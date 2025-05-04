@@ -1,4 +1,4 @@
-﻿using BooksApi.Dto.Book;
+﻿using BooksApi.Dto;
 using BooksApi.Models;
 
 namespace BooksApi.Repository

@@ -1,7 +1,6 @@
-﻿using BooksApi.Dto.Author;
-using BooksApi.Models;
+﻿using BooksApi.Models;
 
-namespace BooksApi.Dto.Book
+namespace BooksApi.Dto
 {
     public class BookDto
     {

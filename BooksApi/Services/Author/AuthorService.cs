@@ -1,6 +1,6 @@
 ﻿using Azure;
 using BooksApi.Data;
-using BooksApi.Dto.Author;
+using BooksApi.Dto;
 using BooksApi.Models;
 using BooksApi.Repository;
 using Microsoft.EntityFrameworkCore;

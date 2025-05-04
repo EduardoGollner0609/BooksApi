@@ -1,8 +1,6 @@
-﻿using BooksApi.Dto.Author;
-using BooksApi.Dto.Book;
+﻿using BooksApi.Dto;
 using BooksApi.Models;
 using BooksApi.Repository;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BooksApi.Controllers
